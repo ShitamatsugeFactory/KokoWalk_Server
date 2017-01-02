@@ -5,21 +5,22 @@ import json
 def user_list(request):
     print "request"
     print request
+    print request.method
     req = request.META['QUERY_STRING']
     reqs = req.split('&')
     name = reqs[0].split('=')[1]
     adder = reqs[1].split('=')[1]
-    print name
-    print adder
-
     
-    m = User.objects.select_related().get(name=name)
-    print m.name
-    print m.counter
-    m.counter = m.counter + int(adder)
-    m.save()
+    obj, created = User.objects.get_or_create(name=name)
+    if created:
+        obj.counter = 0
+        obj.save()
 
-    return HttpResponse(m.counter, content_type='application/json')
-        
-    
-    #return HttpResponse(_json, content_type='application/json')
+    count = 0;
+    for object in User.objects.all():
+        if object.name == name:
+            object.counter = object.counter + int(adder)
+            object.save()
+        count = count + object.counter
+
+    return HttpResponse(count, content_type='application/json')
