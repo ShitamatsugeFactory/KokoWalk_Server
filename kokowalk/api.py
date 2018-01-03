@@ -22,5 +22,6 @@ def user_list(request):
             object.counter = object.counter + int(adder)
             object.save()
         count = count + object.counter
+        str_count = str(count)  # + 'haifuri wo mite'
 
-    return HttpResponse(count, content_type='application/json')
+    return HttpResponse(str_count, content_type='application/json')
